@@ -55,75 +55,84 @@ public class ICalServiceImpl implements ICalService {
 
     @Override
     public void process(File file,ICalDownload icd) {
-        List<ICalendar> icals = null;
         try {
-            icals = Biweekly.parse(file).all();
-        } catch (Exception e) {
-            Logger.error(e.getMessage(),e);
-        }
-        if(icals == null || icals.isEmpty()) {
-            Logger.info("No records found for " + file);
-            return;
-        }
-        Logger.info("number of icals found: " + icals.size());
-        for(ICalendar ical:icals) {
-            if(ical.getEvents() == null || ical.getEvents().isEmpty()) {
-                Logger.info("no events found for ical");
-                continue;
+            List<ICalendar> icals = null;
+            try {
+                icals = Biweekly.parse(file).all();
+                if (icals == null || icals.isEmpty()) {
+                    Logger.info("No records found for " + file);
+                    return;
+                }
+            } catch (Exception e) {
+                Logger.error(e.getMessage(), e);
+                return;
             }
-            for(VEvent vEvent:ical.getEvents()) {
-                ICalDocument document = new ICalDocument();
-                document.setCompanyName(icd.getCompanyName());
-                document.setCompanyCity(icd.getCompanyCity());
-                document.setCompanyState(icd.getCompanyState());
-                document.setCompanyPostalCode(icd.getCompanyPostalCode());
-                document.setCompanyCountry(icd.getCompanyCountry());
-                if(vEvent.getDateStart() != null) {
-                    document.setStartTime(vEvent.getDateStart().getValue());
+            Logger.info("number of icals found: " + icals.size());
+            for (ICalendar ical : icals) {
+                if (ical.getEvents() == null || ical.getEvents().isEmpty()) {
+                    Logger.info("no events found for ical");
+                    continue;
                 }
-                if(vEvent.getDateEnd() != null) {
-                    document.setEndTime(vEvent.getDateEnd().getValue());
-                }
-                if(vEvent.getDateTimeStamp() != null) {
-                    document.setTimestamp(vEvent.getDateTimeStamp().getValue());
-                }
-                if(vEvent.getCreated() != null) {
-                    document.setCreated(vEvent.getCreated().getValue());
-                }
-                if(vEvent.getLastModified() != null) {
-                    document.setLastModified(vEvent.getLastModified().getValue());
-                }
-                if(vEvent.getUid() != null) {
-                    document.setUid(StringUtils.trimToNull(vEvent.getUid().getValue()));
-                }
-                if(vEvent.getSummary() != null) {
-                    document.setSummary(StringUtils.trimToNull(vEvent.getSummary().getValue()));
-                }
-                if(vEvent.getDescription() != null) {
-                    document.setDescription(StringUtils.trimToNull(vEvent.getDescription().getValue()));
-                }
-                if(vEvent.getUrl() != null) {
-                    document.setUrl(StringUtils.trimToNull(vEvent.getUrl().getValue()));
-                }
-                if(vEvent.getLocation() != null) {
-                    document.setLocation(StringUtils.trimToNull(vEvent.getLocation().getValue()));
-                }
-                if(vEvent.getGeo().getLatitude() != null && vEvent.getGeo().getLongitude() != null) {
-                    document.setGeo(vEvent.getGeo().getLatitude() + ", " + vEvent.getGeo().getLongitude());
-                }
+                for (VEvent vEvent : ical.getEvents()) {
+                    ICalDocument document = new ICalDocument();
+                    document.setCompanyName(icd.getCompanyName());
+                    document.setCompanyCity(icd.getCompanyCity());
+                    document.setCompanyState(icd.getCompanyState());
+                    document.setCompanyPostalCode(icd.getCompanyPostalCode());
+                    document.setCompanyCountry(icd.getCompanyCountry());
+                    if (vEvent.getDateStart() != null) {
+                        document.setStartTime(vEvent.getDateStart().getValue());
+                    }
+                    if (vEvent.getDateEnd() != null) {
+                        document.setEndTime(vEvent.getDateEnd().getValue());
+                    }
+                    if (vEvent.getDateTimeStamp() != null) {
+                        document.setTimestamp(vEvent.getDateTimeStamp().getValue());
+                    }
+                    if (vEvent.getCreated() != null) {
+                        document.setCreated(vEvent.getCreated().getValue());
+                    }
+                    if (vEvent.getLastModified() != null) {
+                        document.setLastModified(vEvent.getLastModified().getValue());
+                    }
+                    if (vEvent.getUid() != null) {
+                        document.setUid(StringUtils.trimToNull(vEvent.getUid().getValue()));
+                    }
+                    if (vEvent.getSummary() != null) {
+                        document.setSummary(StringUtils.trimToNull(vEvent.getSummary().getValue()));
+                    }
+                    if (vEvent.getDescription() != null) {
+                        document.setDescription(StringUtils.trimToNull(vEvent.getDescription().getValue()));
+                    }
+                    if (vEvent.getUrl() != null) {
+                        document.setUrl(StringUtils.trimToNull(vEvent.getUrl().getValue()));
+                    }
+                    if (vEvent.getLocation() != null) {
+                        document.setLocation(StringUtils.trimToNull(vEvent.getLocation().getValue()));
+                    }
+                    if (vEvent.getGeo() != null && vEvent.getGeo().getLatitude() != null && vEvent.getGeo().getLongitude() != null) {
+                        document.setGeo(vEvent.getGeo().getLatitude() + ", " + vEvent.getGeo().getLongitude());
+                    }
 
-                Set<String> categories = new TreeSet<>();
-                if(vEvent.getCategories() != null && !vEvent.getCategories().isEmpty()) {
-                    for(Categories cs:vEvent.getCategories()) {
-                        if(cs.getValues() != null && !cs.getValues().isEmpty()) {
-                            categories.addAll(cs.getValues());
+                    Set<String> categories = new TreeSet<>();
+                    if (vEvent.getCategories() != null && !vEvent.getCategories().isEmpty()) {
+                        for (Categories cs : vEvent.getCategories()) {
+                            if (cs.getValues() != null && !cs.getValues().isEmpty()) {
+                                categories.addAll(cs.getValues());
+                            }
                         }
                     }
+                    if (!categories.isEmpty()) {
+                        document.setCategories(categories);
+                    }
+                    cloudsearchDocument.uploadItemDocument(document);
                 }
-                if(!categories.isEmpty()) {
-                    document.setCategories(categories);
-                }
-                cloudsearchDocument.uploadItemDocument(document);
+            }
+        } finally {
+            try {
+                file.delete();
+            } catch (Exception e)  {
+                Logger.error(e.getMessage(),e);
             }
         }
     }
