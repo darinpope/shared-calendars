@@ -1,3 +1,5 @@
+import com.typesafe.sbt.packager.docker.{Cmd, ExecCmd}
+
 name := """shared-calendars"""
 
 version := "1.0-SNAPSHOT"
