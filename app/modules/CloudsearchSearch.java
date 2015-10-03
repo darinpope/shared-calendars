@@ -13,6 +13,7 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
 import models.api.ICalEvent;
 import models.api.SearchResponse;
 import models.cloudsearch.ICalDocument;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import play.Application;
 import play.Configuration;
@@ -114,6 +115,12 @@ public class CloudsearchSearch {
                 ICalEvent event = new ICalEvent();
                 BeanUtils.copyProperties(r,event);
                 event.setAllDayEvent(Helper.isAllDayEvent(event.getStartTime(),event.getEndTime()));
+                //TODO: pull the images from somewhere else
+                if(StringUtils.equalsIgnoreCase("Hope Community Church",event.getCompanyName())) {
+                    event.setCompanyImageUrl("http://www.gethope.net/wp-content/uploads/2014/08/Logo-trans@2xDark.png");
+                } else if(StringUtils.equalsIgnoreCase("The Summit Church",event.getCompanyName())) {
+                    event.setCompanyImageUrl("http://www.summitrdu.com/wp-content/uploads/2013/07/thecity_round-150x150.png");
+                }
                 response.addICalEvent(event);
             }
         }

@@ -16,6 +16,7 @@ public class ICalEvent implements Serializable {
     private String companyState;
     private String companyPostalCode;
     private String companyCountry;
+    private String companyImageUrl;
     private Date startTime;
     private Date endTime;
     private Date timestamp;
@@ -177,5 +178,13 @@ public class ICalEvent implements Serializable {
 
     public void setAllDayEvent(boolean allDayEvent) {
         this.allDayEvent = allDayEvent;
+    }
+
+    public String getCompanyImageUrl() {
+        return companyImageUrl;
+    }
+
+    public void setCompanyImageUrl(String companyImageUrl) {
+        this.companyImageUrl = companyImageUrl;
     }
 }
