@@ -1,5 +1,7 @@
 package modules;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClient;
 import com.amazonaws.services.cloudsearchdomain.model.Hit;
 import com.amazonaws.services.cloudsearchdomain.model.QueryParser;
@@ -9,6 +11,8 @@ import models.api.ICalEvent;
 import models.api.SearchResponse;
 import models.cloudsearch.ICalDocument;
 import org.springframework.beans.BeanUtils;
+import play.Application;
+import play.Configuration;
 import play.Logger;
 import play.inject.ApplicationLifecycle;
 import play.libs.F;
@@ -17,10 +21,7 @@ import utils.Helper;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Singleton
 public class CloudsearchSearch {
@@ -28,8 +29,16 @@ public class CloudsearchSearch {
     private final AmazonCloudSearchDomainClient client;
 
     @Inject
-    public CloudsearchSearch(ApplicationLifecycle lifecycle) {
-        client = new AmazonCloudSearchDomainClient();
+    public CloudsearchSearch(ApplicationLifecycle lifecycle,Configuration configuration, Application app) {
+        if(app.isProd()) {
+            AWSCredentials credentials = new BasicAWSCredentials(
+                    configuration.getString("aws.credentials.accessKey"),
+                    configuration.getString("aws.credentials.secretKey")
+            );
+            client = new AmazonCloudSearchDomainClient(credentials);
+        } else {
+            client = new AmazonCloudSearchDomainClient();
+        }
         client.setEndpoint(Features.getCloudSearchSearchEndpoint());
         Logger.info("CloudsearchSearch: started");
 

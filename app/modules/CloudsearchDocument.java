@@ -1,10 +1,15 @@
 package modules;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClient;
 import com.amazonaws.services.cloudsearchdomain.model.*;
 import models.cloudsearch.AddICalDocument;
 import models.cloudsearch.ICalDocument;
+import play.Application;
+import play.Configuration;
 import play.Logger;
+import play.Play;
 import play.inject.ApplicationLifecycle;
 import play.libs.F;
 import play.libs.Json;
@@ -21,8 +26,16 @@ public class CloudsearchDocument {
     private final AmazonCloudSearchDomainClient client;
 
     @Inject
-    public CloudsearchDocument(ApplicationLifecycle lifecycle) {
-        client = new AmazonCloudSearchDomainClient();
+    public CloudsearchDocument(ApplicationLifecycle lifecycle, Configuration configuration, Application app) {
+        if(app.isProd()) {
+            AWSCredentials credentials = new BasicAWSCredentials(
+                    configuration.getString("aws.credentials.accessKey"),
+                    configuration.getString("aws.credentials.secretKey")
+            );
+            client = new AmazonCloudSearchDomainClient(credentials);
+        } else {
+            client = new AmazonCloudSearchDomainClient();
+        }
         client.setEndpoint(Features.getCloudSearchDocumentEndpoint());
         Logger.info("CloudsearchDocument: started");
 
