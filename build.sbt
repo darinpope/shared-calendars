@@ -10,6 +10,18 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
 scalaVersion := "2.11.6"
 
+dockerCommands := Seq(
+  Cmd("FROM","choosedigital/java:oracle-java8"),
+  Cmd("MAINTAINER","dpope <noo@no.com>"),
+  Cmd("EXPOSE","9000"),
+  Cmd("ADD","stage /"),
+  Cmd("WORKDIR","/opt/docker"),
+  Cmd("RUN","[\"chown\", \"-R\", \"daemon\", \".\"]"),
+  Cmd("USER","daemon"),
+  Cmd("ENTRYPOINT","[\"bin/shared-calendars\"]"),
+  ExecCmd("CMD")
+)
+
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
