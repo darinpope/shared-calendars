@@ -1,0 +1,17 @@
+@(aForm: Form[forms.ICalDownload])
+
+@import helper._
+@import org.apache.commons.lang3.StringUtils
+
+@main("Load File") {
+    @form(routes.Ingestion.doLoadFile()) {
+        @CSRF.formField
+        @inputText(aForm("companyName"))
+        @inputText(aForm("companyCity"))
+        @inputText(aForm("companyState"))
+        @inputText(aForm("companyPostalCode"))
+        @inputText(aForm("companyCountry"))
+        @inputText(aForm("url"))
+        <button type="submit">Submit</button>
+    }
+}
