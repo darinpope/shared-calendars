@@ -7,6 +7,9 @@ import com.amazonaws.services.cloudsearchdomain.model.Hit;
 import com.amazonaws.services.cloudsearchdomain.model.QueryParser;
 import com.amazonaws.services.cloudsearchdomain.model.SearchRequest;
 import com.amazonaws.services.cloudsearchdomain.model.SearchResult;
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LengthUnit;
 import models.api.ICalEvent;
 import models.api.SearchResponse;
 import models.cloudsearch.ICalDocument;
@@ -61,9 +64,13 @@ public class CloudsearchSearch {
         return search(request);
     }
 
-    public SearchResponse byGeo(Double latitude,Double longitude) {
+    public SearchResponse byGeo(Double latitude,Double longitude,Double distance) {
+        LatLng latlng = new LatLng(latitude,longitude);
+        LatLng upperLeft = LatLngTool.travel(latlng,315,distance, LengthUnit.MILE);
+        LatLng lowerRight = LatLngTool.travel(latlng,135,distance, LengthUnit.MILE);
         SearchRequest request = new SearchRequest();
-
+        request.setQueryParser(QueryParser.Structured);
+        request.setQuery("location:['"+upperLeft.getLatitude()+","+upperLeft.getLongitude()+"','"+lowerRight.getLatitude()+","+lowerRight.getLongitude()+"']");
         return search(request);
     }
 

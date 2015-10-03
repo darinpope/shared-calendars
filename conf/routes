@@ -3,8 +3,8 @@
 # ~~~~
 
 OPTIONS        /api/startDate/:startDate               @controllers.CorsApiController.startDate(startDate: String)
-OPTIONS        /api/latlon/:latitude/:longitude        @controllers.CorsApiController.latLon(latitude: Double, longitude: Double)
-GET            /api/latlon/:latitude/:longitude        @controllers.API.geo(latitude: Double, longitude: Double)
+OPTIONS        /api/latlon/:latitude/:longitude        @controllers.CorsApiController.latLon(latitude: Double, longitude: Double, distance: Double)
+GET            /api/latlon/:latitude/:longitude        @controllers.API.geo(latitude: Double, longitude: Double, distance: Double ?= 10.0)
 GET            /api/startDate/:startDate               @controllers.API.byStartDate(startDate: String, start: Long ?= 0, size:Long ?= 50)
 
 # Home page

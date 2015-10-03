@@ -32,7 +32,8 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-cloudsearch" % "1.10.22",
   "com.amazonaws" % "aws-java-sdk-s3" % "1.10.22",
   "net.sf.biweekly" % "biweekly" % "0.4.3",
-  "com.netflix.archaius" % "archaius-aws" % "0.7.1"
+  "com.netflix.archaius" % "archaius-aws" % "0.7.1",
+  "com.javadocmd" % "simplelatlng" % "1.3.0"
 )
 
 // Play provides two styles of routers, one expects its actions to be injected, the

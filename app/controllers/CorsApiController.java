@@ -4,7 +4,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class CorsApiController extends Controller {
-    public Result latLon(Double latitude,Double longitude) {
+    public Result latLon(Double latitude,Double longitude,Double distance) {
         return index();
     }
 
