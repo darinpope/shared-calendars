@@ -42,6 +42,7 @@ public class ICalServiceImpl implements ICalService {
             response = ws.url(icd.getUrl()).get().get(60, TimeUnit.SECONDS);
             file = new File(Helper.getTempDir() + UUID.randomUUID().toString());
             Files.write(response.asByteArray(),file);
+            Logger.info("wrote " + file.getName() + " for " + icd.getCompanyName());
         } catch (Exception e) {
             Logger.error(e.getMessage(),e);
         }
@@ -64,8 +65,10 @@ public class ICalServiceImpl implements ICalService {
             Logger.info("No records found for " + file);
             return;
         }
+        Logger.info("number of icals found: " + icals.size());
         for(ICalendar ical:icals) {
             if(ical.getEvents() == null || ical.getEvents().isEmpty()) {
+                Logger.info("no events found for ical");
                 continue;
             }
             for(VEvent vEvent:ical.getEvents()) {
