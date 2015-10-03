@@ -70,7 +70,8 @@ public class CloudsearchSearch {
         LatLng lowerRight = LatLngTool.travel(latlng,135,distance, LengthUnit.MILE);
         SearchRequest request = new SearchRequest();
         request.setQueryParser(QueryParser.Structured);
-        request.setQuery("location:['"+upperLeft.getLatitude()+","+upperLeft.getLongitude()+"','"+lowerRight.getLatitude()+","+lowerRight.getLongitude()+"']");
+        request.setQuery("geo:['"+upperLeft.getLatitude()+","+upperLeft.getLongitude()+"','"+lowerRight.getLatitude()+","+lowerRight.getLongitude()+"']");
+        request.setSort("start_time asc");
         return search(request);
     }
 
