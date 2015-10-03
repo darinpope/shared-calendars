@@ -70,8 +70,7 @@ public class CloudsearchSearch {
         request.setQueryParser(QueryParser.Structured);
         StringBuilder sb = new StringBuilder();
         sb.append("(and");
-        sb.append(" start_time:['" + Helper.getStringFromDate(startDate) + "',}");
-        sb.append(" end_time:{,'" + Helper.getStringFromDate(endDate) + "']");
+        sb.append(" start_time:['" + Helper.getStringFromDate(startDate) + "','"+Helper.getStringFromDate(endDate)+"']");
         if(latitude != null && longitude != null && distance != null) {
             LatLng latlng = new LatLng(latitude,longitude);
             LatLng upperLeft = LatLngTool.travel(latlng,315,distance, LengthUnit.MILE);
