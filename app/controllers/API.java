@@ -21,27 +21,40 @@ public class API extends Controller {
         this.cloudsearchSearch = cloudsearchSearch;
     }
 
-    public Result geo(Double latitude,Double longitude, Double distance) {
+    public Result byStartDate(String startDate, Long start, Long size) {
         SearchResponse result = null;
         try {
-            result = cloudsearchSearch.byGeo(latitude, longitude, distance);
+            result = cloudsearchSearch.byStartDate(Helper.getDateFromString(startDate), start, size);
         } catch (Exception e) {
-            Logger.error(e.getMessage(),e);
+            Logger.error(e.getMessage(), e);
         }
-        if(result == null) {
+        if (result == null) {
             return badRequest();
         }
         return ok(Json.toJson(result));
     }
 
-    public Result byStartDate(String startDate,Long start,Long size) {
+    public Result eventsWithGeo(String startDate, String endDate, Double latitude, Double longitude, Double distance, Long start, Long size) {
         SearchResponse result = null;
         try {
-            result = cloudsearchSearch.byStartDate(Helper.getDateFromString(startDate),start,size);
+            result = cloudsearchSearch.events(Helper.getDateFromString(startDate), Helper.getDateFromString(endDate), latitude, longitude, distance, start, size);
         } catch (Exception e) {
-            Logger.error(e.getMessage(),e);
+            Logger.error(e.getMessage(), e);
         }
-        if(result == null) {
+        if (result == null) {
+            return badRequest();
+        }
+        return ok(Json.toJson(result));
+    }
+
+    public Result events(String startDate, String endDate, Long start, Long size) {
+        SearchResponse result = null;
+        try {
+            result = cloudsearchSearch.events(Helper.getDateFromString(startDate), Helper.getDateFromString(endDate), null, null, null, start, size);
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+        }
+        if (result == null) {
             return badRequest();
         }
         return ok(Json.toJson(result));

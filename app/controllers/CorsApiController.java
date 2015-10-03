@@ -4,11 +4,15 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class CorsApiController extends Controller {
-    public Result latLon(Double latitude,Double longitude,Double distance) {
+    public Result eventsWithGeo(String startDate,String endDate,Double latitude,Double longitude) {
         return index();
     }
 
     public Result startDate(String startDate) {
+        return index();
+    }
+
+    public Result events(String startDate,String endDate) {
         return index();
     }
 

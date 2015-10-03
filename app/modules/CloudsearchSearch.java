@@ -65,14 +65,24 @@ public class CloudsearchSearch {
         return search(request);
     }
 
-    public SearchResponse byGeo(Double latitude,Double longitude,Double distance) {
-        LatLng latlng = new LatLng(latitude,longitude);
-        LatLng upperLeft = LatLngTool.travel(latlng,315,distance, LengthUnit.MILE);
-        LatLng lowerRight = LatLngTool.travel(latlng,135,distance, LengthUnit.MILE);
+    public SearchResponse events(Date startDate,Date endDate,Double latitude, Double longitude,Double distance,Long start, Long size) {
         SearchRequest request = new SearchRequest();
         request.setQueryParser(QueryParser.Structured);
-        request.setQuery("geo:['"+upperLeft.getLatitude()+","+upperLeft.getLongitude()+"','"+lowerRight.getLatitude()+","+lowerRight.getLongitude()+"']");
+        StringBuilder sb = new StringBuilder();
+        sb.append("(and");
+        sb.append(" start_time:['" + Helper.getStringFromDate(startDate) + "',}");
+        sb.append(" end_time:{,'" + Helper.getStringFromDate(endDate) + "']");
+        if(latitude != null && longitude != null && distance != null) {
+            LatLng latlng = new LatLng(latitude,longitude);
+            LatLng upperLeft = LatLngTool.travel(latlng,315,distance, LengthUnit.MILE);
+            LatLng lowerRight = LatLngTool.travel(latlng,135,distance, LengthUnit.MILE);
+            sb.append(" geo:['"+upperLeft.getLatitude()+","+upperLeft.getLongitude()+"','"+lowerRight.getLatitude()+","+lowerRight.getLongitude()+"']");
+        }
+        sb.append(")");
+        request.setQuery(sb.toString());
         request.setSort("start_time asc");
+        request.setSize(size);
+        request.setStart(start);
         return search(request);
     }
 
