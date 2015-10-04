@@ -1,6 +1,7 @@
 package controllers;
 
 import actions.AddResponseHeadersAction;
+import models.api.ICalEvent;
 import models.api.SearchResponse;
 import modules.CloudsearchSearch;
 import play.Logger;
@@ -19,19 +20,6 @@ public class API extends Controller {
     @Inject
     public API(CloudsearchSearch cloudsearchSearch) {
         this.cloudsearchSearch = cloudsearchSearch;
-    }
-
-    public Result byStartDate(String startDate, Long start, Long size) {
-        SearchResponse result = null;
-        try {
-            result = cloudsearchSearch.byStartDate(Helper.getDateFromString(startDate), start, size);
-        } catch (Exception e) {
-            Logger.error(e.getMessage(), e);
-        }
-        if (result == null) {
-            return badRequest();
-        }
-        return ok(Json.toJson(result));
     }
 
     public Result eventsWithGeo(String startDate, String endDate, Double latitude, Double longitude, Double distance, Long start, Long size) {
@@ -58,6 +46,19 @@ public class API extends Controller {
             return badRequest();
         }
         return ok(Json.toJson(result));
+    }
+
+    public Result event(String uid) {
+        ICalEvent event = null;
+        try {
+            event = cloudsearchSearch.event(uid);
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+        }
+        if (event == null) {
+            return badRequest();
+        }
+        return ok(Json.toJson(event));
     }
 
 }

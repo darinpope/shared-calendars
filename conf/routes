@@ -8,8 +8,8 @@ GET            /api/events/:startDate/:endDate/:latitude/:longitude        @cont
 OPTIONS        /api/events/:startDate/:endDate                             @controllers.CorsApiController.events(startDate: String, endDate: String)
 GET            /api/events/:startDate/:endDate                             @controllers.API.events(startDate: String, endDate: String, start: Long ?= 0, size:Long ?= 50)
 
-OPTIONS        /api/startDate/:startDate                                   @controllers.CorsApiController.startDate(startDate: String)
-GET            /api/startDate/:startDate                                   @controllers.API.byStartDate(startDate: String, start: Long ?= 0, size:Long ?= 50)
+OPTIONS        /api/event/:uid                                             @controllers.CorsApiController.event(uid: String)
+GET            /api/event/:uid                                             @controllers.API.event(uid: String)
 
 # Home page
 GET            /                                                           controllers.Application.index()

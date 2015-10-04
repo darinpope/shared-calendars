@@ -8,11 +8,11 @@ public class CorsApiController extends Controller {
         return index();
     }
 
-    public Result startDate(String startDate) {
+    public Result events(String startDate,String endDate) {
         return index();
     }
 
-    public Result events(String startDate,String endDate) {
+    public Result event(String uid) {
         return index();
     }
 

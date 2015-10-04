@@ -85,6 +85,28 @@ public class CloudsearchSearch {
         return search(request);
     }
 
+    public ICalEvent event(String uid) {
+        SearchRequest request = new SearchRequest();
+        request.setQueryParser(QueryParser.Structured);
+        request.setQuery("uid:'"+uid+"'");
+        SearchResult result = null;
+        try {
+            result = client.search(request);
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+        }
+        if (result == null) {
+            return null;
+        }
+        ICalEvent event = null;
+        if (result.getHits() != null && result.getHits().getHit() != null && !result.getHits().getHit().isEmpty()) {
+            for (Hit hit : result.getHits().getHit()) {
+                event = getICalEvent(hit,true);
+            }
+        }
+        return event;
+    }
+
     private SearchResponse search(SearchRequest request) {
         SearchResponse response = null;
         SearchResult result = null;
@@ -102,38 +124,57 @@ public class CloudsearchSearch {
         response.setStart(result.getHits().getStart());
         if (result.getHits() != null && result.getHits().getHit() != null && !result.getHits().getHit().isEmpty()) {
             for (Hit hit : result.getHits().getHit()) {
-                ICalDocument r = new ICalDocument();
-                r.setUid(hit.getId());
-                if(hit.getFields().get("start_time") != null && !hit.getFields().get("start_time").isEmpty()) {
-                    r.setStartTime(Helper.getDateFromString(hit.getFields().get("start_time").get(0)));
-                }
-                if(hit.getFields().get("end_time") != null && !hit.getFields().get("end_time").isEmpty()) {
-                    r.setEndTime(Helper.getDateFromString(hit.getFields().get("end_time").get(0)));
-                }
-                r.setCompanyName(hit.getFields().get("company_name").get(0));
-                r.setCompanyCity(hit.getFields().get("company_city").get(0));
-                r.setCompanyState(hit.getFields().get("company_state").get(0));
-                r.setCompanyPostalCode(hit.getFields().get("company_postal_code").get(0));
-                r.setCompanyCountry(hit.getFields().get("company_country").get(0));
-                if(hit.getFields().get("summary") != null && !hit.getFields().get("summary").isEmpty()) {
-                    r.setSummary(hit.getFields().get("summary").get(0));
-                }
-                if(hit.getFields().get("description") != null && !hit.getFields().get("description").isEmpty()) {
-                    r.setDescription(hit.getFields().get("description").get(0));
-                }
-                ICalEvent event = new ICalEvent();
-                BeanUtils.copyProperties(r,event);
-                event.setAllDayEvent(Helper.isAllDayEvent(event.getStartTime(),event.getEndTime()));
-                //TODO: pull the images from somewhere else
-                if(StringUtils.equalsIgnoreCase("Hope Community Church",event.getCompanyName())) {
-                    event.setCompanyImageUrl("http://www.gethope.net/wp-content/uploads/2014/08/Logo-trans@2xDark.png");
-                } else if(StringUtils.equalsIgnoreCase("The Summit Church",event.getCompanyName())) {
-                    event.setCompanyImageUrl("http://www.summitrdu.com/wp-content/uploads/2013/07/thecity_round-150x150.png");
-                }
+                ICalEvent event = getICalEvent(hit,false);
                 response.addICalEvent(event);
             }
         }
         return response;
     }
 
+    private ICalEvent getICalEvent(Hit hit, boolean fullData) {
+        ICalDocument r = new ICalDocument();
+        r.setUid(hit.getId());
+        if (hit.getFields().get("start_time") != null && !hit.getFields().get("start_time").isEmpty()) {
+            r.setStartTime(Helper.getDateFromString(hit.getFields().get("start_time").get(0)));
+        }
+        r.setCompanyName(StringUtils.trimToNull(hit.getFields().get("company_name").get(0)));
+        r.setCompanyCity(StringUtils.trimToNull(hit.getFields().get("company_city").get(0)));
+        if (hit.getFields().get("summary") != null && !hit.getFields().get("summary").isEmpty()) {
+            r.setSummary(StringUtils.trimToNull(hit.getFields().get("summary").get(0)));
+        }
+        if (fullData) {
+            if (hit.getFields().get("end_time") != null && !hit.getFields().get("end_time").isEmpty()) {
+                r.setEndTime(Helper.getDateFromString(hit.getFields().get("end_time").get(0)));
+            }
+            if (hit.getFields().get("company_state") != null && !hit.getFields().get("company_state").isEmpty()) {
+                r.setCompanyState(StringUtils.trimToNull(hit.getFields().get("company_state").get(0)));
+            }
+            if (hit.getFields().get("company_postal_code") != null && !hit.getFields().get("company_postal_code").isEmpty()) {
+                r.setCompanyPostalCode(StringUtils.trimToNull(hit.getFields().get("company_postal_code").get(0)));
+            }
+            if (hit.getFields().get("company_country_code") != null && !hit.getFields().get("company_country_code").isEmpty()) {
+                r.setCompanyCountry(StringUtils.trimToNull(hit.getFields().get("company_country_code").get(0)));
+            }
+            if (hit.getFields().get("description") != null && !hit.getFields().get("description").isEmpty()) {
+                r.setDescription(StringUtils.trimToNull(hit.getFields().get("description").get(0)));
+            }
+            if(hit.getFields().get("url") != null) {
+                r.setUrl(StringUtils.trimToNull(hit.getFields().get("url").get(0)));
+            }
+            if(hit.getFields().get("location") != null) {
+                r.setLocation(StringUtils.trimToNull(hit.getFields().get("location").get(0)));
+            }
+        }
+
+        ICalEvent event = new ICalEvent();
+        BeanUtils.copyProperties(r, event);
+        event.setAllDayEvent(Helper.isAllDayEvent(event.getStartTime(), event.getEndTime()));
+        //TODO: pull the images from somewhere else
+        if (StringUtils.equalsIgnoreCase("Hope Community Church", event.getCompanyName())) {
+            event.setCompanyImageUrl("http://www.gethope.net/wp-content/uploads/2014/08/Logo-trans@2xDark.png");
+        } else if (StringUtils.equalsIgnoreCase("The Summit Church", event.getCompanyName())) {
+            event.setCompanyImageUrl("http://www.summitrdu.com/wp-content/uploads/2013/07/thecity_round-150x150.png");
+        }
+        return event;
+    }
 }
