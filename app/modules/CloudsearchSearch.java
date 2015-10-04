@@ -174,6 +174,8 @@ public class CloudsearchSearch {
             event.setCompanyImageUrl("http://www.gethope.net/wp-content/uploads/2014/08/Logo-trans@2xDark.png");
         } else if (StringUtils.equalsIgnoreCase("The Summit Church", event.getCompanyName())) {
             event.setCompanyImageUrl("https://pbs.twimg.com/profile_images/2405818259/lyp6dibz2m9yb6oqvyer_400x400.png");
+        } else if (StringUtils.equalsIgnoreCase("Fellowship Raleigh", event.getCompanyName())) {
+            event.setCompanyImageUrl("https://s3.amazonaws.com/thecity/accounts/1370/account_images/logo_fellowshipraleigh.gif");
         }
         return event;
     }
