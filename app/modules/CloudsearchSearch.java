@@ -173,7 +173,7 @@ public class CloudsearchSearch {
         if (StringUtils.equalsIgnoreCase("Hope Community Church", event.getCompanyName())) {
             event.setCompanyImageUrl("http://www.gethope.net/wp-content/uploads/2014/08/Logo-trans@2xDark.png");
         } else if (StringUtils.equalsIgnoreCase("The Summit Church", event.getCompanyName())) {
-            event.setCompanyImageUrl("http://www.summitrdu.com/wp-content/uploads/2013/07/thecity_round-150x150.png");
+            event.setCompanyImageUrl("https://pbs.twimg.com/profile_images/2405818259/lyp6dibz2m9yb6oqvyer_400x400.png");
         }
         return event;
     }
