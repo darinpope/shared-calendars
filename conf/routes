@@ -11,6 +11,9 @@ GET            /api/events/:startDate/:endDate                             @cont
 OPTIONS        /api/event/:uid                                             @controllers.CorsApiController.event(uid: String)
 GET            /api/event/:uid                                             @controllers.API.event(uid: String)
 
+OPTIONS        /api/search/:searchterm                                     @controllers.CorsApiController.search(searchterm: String)
+GET            /api/search/:searchterm                                     @controllers.API.search(searchterm: String, start: Long ?= 0, size:Long ?= 50)
+
 # Home page
 GET            /                                                           controllers.Application.index()
 

@@ -16,6 +16,10 @@ public class CorsApiController extends Controller {
         return index();
     }
 
+    public Result search(String term) {
+        return index();
+    }
+
     public Result index() {
         // add headers discussed in the following posts:
         // http://empirewindrush.com/tech/2013/12/17/cors-and-play.html

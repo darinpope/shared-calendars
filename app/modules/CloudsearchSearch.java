@@ -14,6 +14,8 @@ import models.api.ICalEvent;
 import models.api.SearchResponse;
 import models.cloudsearch.ICalDocument;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.BeanUtils;
 import play.Application;
 import play.Configuration;
@@ -62,7 +64,17 @@ public class CloudsearchSearch {
         request.setSort("start_time asc");
         request.setSize(size);
         request.setStart(start);
-        return search(request);
+        return doSearch(request);
+    }
+
+    public SearchResponse search(String term,Long start,Long size) {
+        SearchRequest request = new SearchRequest();
+        request.setQuery(term);
+        request.setFilterQuery("start_time:['"+Helper.getStringFromDate(DateTime.now(DateTimeZone.UTC).toDate())+"',}");
+        request.setSort("start_time asc");
+        request.setSize(size);
+        request.setStart(start);
+        return doSearch(request);
     }
 
     public SearchResponse events(Date startDate,Date endDate,Double latitude, Double longitude,Double distance,Long start, Long size) {
@@ -82,7 +94,7 @@ public class CloudsearchSearch {
         request.setSort("start_time asc");
         request.setSize(size);
         request.setStart(start);
-        return search(request);
+        return doSearch(request);
     }
 
     public ICalEvent event(String uid) {
@@ -107,7 +119,7 @@ public class CloudsearchSearch {
         return event;
     }
 
-    private SearchResponse search(SearchRequest request) {
+    private SearchResponse doSearch(SearchRequest request) {
         SearchResponse response = null;
         SearchResult result = null;
         try {

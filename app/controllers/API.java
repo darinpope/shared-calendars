@@ -61,4 +61,17 @@ public class API extends Controller {
         return ok(Json.toJson(event));
     }
 
+    public Result search(String searchterm, Long start, Long size) {
+        SearchResponse result = null;
+        try {
+            result = cloudsearchSearch.search(searchterm,start,size);
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+        }
+        if (result == null) {
+            return badRequest();
+        }
+        return ok(Json.toJson(result));
+    }
+
 }
