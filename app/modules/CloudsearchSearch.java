@@ -183,7 +183,7 @@ public class CloudsearchSearch {
         event.setAllDayEvent(Helper.isAllDayEvent(event.getStartTime(), event.getEndTime()));
         //TODO: pull the images from somewhere else
         if (StringUtils.equalsIgnoreCase("Hope Community Church", event.getCompanyName())) {
-            event.setCompanyImageUrl("http://www.gethope.net/wp-content/uploads/2014/08/Logo-trans@2xDark.png");
+            event.setCompanyImageUrl("https://scontent-iad3-1.xx.fbcdn.net/hprofile-xpt1/v/t1.0-1/p160x160/12046843_10153703346638385_569716643470458757_n.jpg?oh=cc19f7e1035b0691b823fd351aacd20b&oe=56D00C52");
         } else if (StringUtils.equalsIgnoreCase("The Summit Church", event.getCompanyName())) {
             event.setCompanyImageUrl("https://pbs.twimg.com/profile_images/2405818259/lyp6dibz2m9yb6oqvyer_400x400.png");
         } else if (StringUtils.equalsIgnoreCase("Fellowship Raleigh", event.getCompanyName())) {
